@@ -12,12 +12,14 @@ class App extends Component {
     message: '',
     address: '',
     addressFrom: '',
-    currentaddress:''
+    currentaddress:'',
+    accounts:[]
   };
   componentDidMount() {
-    const owner =  accounts[0];
     
-    this.setState({ owner });
+    const accounts = await web3.eth.getAccounts();
+    const owner =  accounts[0];
+    this.setState({ owner , accounts});
   }
 
   onSubmit = async event => {
@@ -25,7 +27,7 @@ class App extends Component {
     
     this.setState({ message: 'Waiting on transaction success...' });
     await token.methods.getTokens().send({
-      from: accounts[0],
+      from: this.state.accounts[0],
       value: web3.utils.toWei(this.state.value, 'ether')
     });
     this.setState({ message: 'You got your tokens!' });
@@ -36,7 +38,7 @@ class App extends Component {
     console.log(typeof accounts[0],  accounts[0]);
     this.setState({ message: 'Waiting on transaction success...' });
     let result = await token.methods.balances(this.state.address).call({
-      from: accounts[0]
+      from: this.state.accounts[0]
     });
 console.log(result)
     this.setState({ message: result });
@@ -46,7 +48,7 @@ console.log(result)
     
     this.setState({ message: 'Waiting on transaction success...' });
      await token.methods.transfer(this.state.address,this.state.value).send({
-      from: accounts[0]
+      from: this.state.accounts[0]
     });
 // console.log(result)
     this.setState({ message: "transaction has been entered" });
@@ -56,7 +58,7 @@ console.log(result)
     
     this.setState({ message: 'Waiting on transaction success...' });
      await token.methods.transferFrom(this.state.addressFrom, this.state.address,this.state.value).send({
-      from: accounts[0]
+      from: this.state.accounts[0]
     });
 // console.log(result)
     this.setState({ message: "transaction has been entered" });
@@ -66,7 +68,7 @@ console.log(result)
     
     this.setState({ message: 'Waiting on transaction success...' });
      await token.methods.approve(this.state.address,this.state.value).send({
-      from: accounts[0]
+      from: this.state.accounts[0]
     });
 // console.log(result)
     this.setState({ message: "transaction has been entered" });
@@ -76,7 +78,7 @@ console.log(result)
    
    this.setState({ message: 'Waiting on transaction success...' });
    await token.methods.getEthers(this.state.value).send({
-     from: accounts[0]
+     from: this.state.accounts[0]
    });
    this.setState({ message: 'You sold your tokens!' });
   };
